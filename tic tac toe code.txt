@@ -1,0 +1,145 @@
+import React, { Component } from 'react';
+import './App.css';
+class App extends Component {
+    constructor() {
+        super();
+        this.state = {
+            gridData: [[{ value: "", flag: false }, { value: "", flag: false }, { value: "", flag: false }], [{ value: "", flag: false }, { value: "", flag: false }, { value: "", flag: false }], [{ value: "", flag: false }, { value: "", flag: false }, { value: "", flag: false }]],
+            playerNumber: 1,
+            winnerPlayer: ""
+        }
+    }
+    gridClicked(i, j) {
+        var localGridData
+        localGridData = this.state.gridData
+        if (this.state.playerNumber === 1) {
+            this.setState({ playerNumber: 2 })
+            localGridData[i][j] = { value: "X", flag: true }
+        }
+        else if (this.state.playerNumber === 2) {
+            this.setState({ playerNumber: 1 })
+            localGridData[i][j] = { value: "O", flag: true }
+        }
+        this.setState({ gridData: localGridData }, () => this.calculateResult())
+    }
+    displayInnerGrid(data, i) {
+        const innerGridUI = data.map((innerData, index) =>
+            <td className="text-center" key={index}>
+                <button className="btn btn-block" onClick={() => this.gridClicked(i, index)} disabled={this.state.gridData[i][index].flag}>
+                    <i className={(data[index].value === "X") ? "fas fa-times text-success" : (data[index].value === "O") ? "far fa-circle text-danger" : ""}></i>
+                </button>
+            </td>
+        )
+        return innerGridUI
+    }
+    displayGrid() {
+        const gridUI = this.state.gridData.map((data, index) =>
+            <tr className="" key={index}>
+                {
+                    this.displayInnerGrid(data, index)
+                }
+            </tr>
+        )
+        return gridUI
+    }
+    calculateResult() {
+        var countX = 0
+        var countO = 0
+        for (let i = 0; i < 3; i++) {
+            countX = this.state.gridData[i].map(v => { return v.value }).filter((v) => { return v === 'X' }).length
+            countO = this.state.gridData[i].map(v => { return v.value }).filter((v) => { return v === 'O' }).length
+            var playerName = (countX === 3) ? "Player 1 wins !" : (countO === 3) ? "player 2 wins !" : ""
+            if (playerName === "Player 1 wins !" || playerName === "Player 2 wins !") {
+                this.setState({ winnerPlayer: playerName })
+                this.disableWholeGrid()
+                return
+            }
+        }
+        for (let index = 0; index < 3; index++) {
+            var col1 = []
+            for (let i = 0; i < 3; i++)
+                col1.push(this.state.gridData[i][index].value)
+            countX = col1.filter((v) => { return v === "X" }).length
+            countO = col1.filter((v) => { return v === "O" }).length
+            playerName = (countX === 3) ? "Player 1 wins !" : (countO === 3) ? "Player 2 wins !" : ""
+            if (playerName === "Player 1 wins !" || playerName === "Player 2 wins !") {
+                this.setState({ winnerPlayer: playerName })
+                this.disableWholeGrid()
+                return
+            }
+            col1 = []
+        }
+        var diag1 = []
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (i === j)
+                    diag1.push(this.state.gridData[i][j].value)
+            }
+        }
+        countX = diag1.filter((v) => { return v === "X" }).length
+        countO = diag1.filter((v) => { return v === "O" }).length
+        playerName = (countX === 3) ? "Player 1 wins !" : (countO === 3) ? "Player 2 wins !" : ""
+        if (playerName === "Player 1 wins !" || playerName === "Player 2 wins !") {
+            this.setState({ winnerPlayer: playerName })
+            this.disableWholeGrid()
+            return
+        }
+        var diag2 = []
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if ((i === 0 && j === 2) || (i === 1 && j === 1) || (i === 2 && j === 0))
+                    diag2.push(this.state.gridData[i][j].value)
+            }
+        }
+        countX = diag2.filter((v) => { return v === "X" }).length
+        countO = diag2.filter((v) => { return v === "O" }).length
+        playerName = (countX === 3) ? "Player 1 wins !" : (countO === 3) ? "Player 2 wins !" : ""
+        if (playerName === "Player 1 wins !" || playerName === "Player 2 wins !") {
+            this.setState({ winnerPlayer: playerName })
+            this.disableWholeGrid()
+            return
+        }
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (this.state.gridData[i][j].flag === false)
+                    return
+            }
+        }
+        this.setState({ winnerPlayer: "Match is drawn !" })
+    } disableWholeGrid() {
+        var grid = this.state.gridData
+        grid.forEach(g => {
+            g.map(v => v.flag = true)
+        })
+    }
+    reset() {
+        this.setState({
+            gridData: [[{ value: "", flag: false }, { value: "", flag: false }, { value: "", flag: false }], [{ value: "", flag: false }, { value: "", flag: false }, { value: "", flag: false }], [{ value: "", flag: false }, { value: "", flag: false }, { value: "", flag: false }]],
+        })
+        this.setState({ winnerPlayer: "" })
+
+    }
+    render() {
+        return (
+            <div className="container">
+                <div className="jumbotron py-3 my-4">
+                    <p className="display-4 text-center mb-0">Tic Tac Toe</p>
+                </div>
+                <p className="lead">Player {this.state.playerNumber} to play</p>
+                <table className="table table-bordered">
+                    <tbody>
+                        {this.displayGrid()}
+                    </tbody>
+                </table>
+                <button className="btn btn-primary" onClick={() => this.reset()}>Reset</button>
+                {(this.state.winnerPlayer !== "") ? (
+                    <div className="alert alert-success" role="alert">
+                        <span className="h4">{this.state.winnerPlayer}</span>
+                    </div>
+                ) : ""
+                }
+            </div>
+        );
+    }
+}
+export default App;

@@ -1,0 +1,143 @@
+import React, { Component } from 'react';
+
+class App extends Component {
+    newId
+    newtitle
+    newName
+    newbody
+    newpostedby
+
+    constructor() {
+        super();
+        this.state = {
+            buttonFlag: true,
+            Posts: [
+
+                {
+                    id: 1,
+                    title: "tea",
+                    Name: "raju",
+                    body: "JAVA",
+                    postedby: "khan",
+
+                },
+                {
+                    id: 2,
+                    title: "tea",
+                    Name: "ramu",
+                    body: "JAVA",
+                    postedby: "khan",
+
+                },
+                {
+                    id: 3,
+                    title: "tea",
+                    Name: "ragu",
+                    body: "JAVA",
+                    postedby: "khan",
+
+                },
+
+            ]
+        };
+    }
+
+    getPosts() {
+        const Posts = this.state.Posts.map(
+            (Post, index) =>
+                <div className="card my-3" >
+                    <div className="card-body">
+                        <div>
+                            <div class="text-right mb-3">
+                                <button type="button" className="btn btn-link" onClick={() => this.deletePost(index)}>
+                                    <i className="fas fa-times text-danger"></i>
+                                </button>
+                            </div>
+
+                            <p className="card-title mb-2 text-primary">title:<b>{Post.title}</b></p>
+                            <p className="card-subtitle mb-2 text-warning">id:{Post.id}</p>
+                            <p className="card-text mb-2 text-info">Name:{Post.Name}</p>
+                            <p className="card-text mb-2 text-sucess">body:{Post.body}</p>
+                            <p className="card-text mb-2 text-danger">postedby:{Post.postedby}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+        )
+        return Posts
+    }
+    addPost() {
+
+        var newPost = {
+            id: this.newId.value,
+            title: this.newtitle.value,
+            name: this.newName.value,
+            body: this.newbody.value,
+            postedby: this.newpostedby.value
+        }
+        var card = this.state.Posts
+
+        card.push(newPost)
+        this.setState({ Posts: card, buttonFlag: true });
+        this.newId.value = '';
+        this.newtitle.value = '';
+        this.newName.value = '';
+        this.newbody.value = '';
+        this.newpostedby.value = '';
+    }
+    textChanged() {
+        this.setState({
+            buttonFlag: (this.newId.value === '' || this.newtitle.value === '' || this.newName.value === '' || this.newbody.value === '' || this.newpostedby.value === '') ? true : false
+        })
+    }
+
+    deletePost(index) {
+        var card = this.state.Posts;
+        card.splice(index, 1)
+        this.setState(
+            {
+                Posts: card
+            });
+    }
+    render() {
+        return (
+            <div className="container">
+                <div className="jumbotron py-3 my-4">
+                    <p className="display-4 text-center mb-0">Bulletin-Board</p>
+                </div>
+
+
+                <input type="text" className="form-control" placeholder="Enter Id of Post"
+                    ref={(input) => this.newId = input} onInput={() => this.textChanged()} />
+
+
+
+                <input type="text" className="form-control" font color placeholder="Enter title "
+                    ref={(input1) => this.newtitle = input1} onInput={() => this.textChanged()} />
+
+
+                <input type="text" className="form-control" placeholder="enter Name"
+                    ref={(input2) => this.newName = input2} onInput={() => this.textChanged()} />
+
+                <input type="text" className="form-control" placeholder="enter Body"
+                    ref={(input3) => this.newbody = input3} onInput={() => this.textChanged()} />
+
+                <input type="text" className="form-control" placeholder="enter Postedby"
+                    ref={(input4) => this.newpostedby = input4} onInput={() => this.textChanged()} />
+                <button className="btn btn-primary mr-2" onClick={() => this.addPost()} disabled={this.state.buttonFlag} >
+                    <i className="fas fa-plus"></i>
+                </button>
+
+                {this.getPosts()}
+
+
+            </div>
+        );
+    }
+
+
+
+
+}
+export default App;
