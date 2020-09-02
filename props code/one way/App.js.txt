@@ -1,0 +1,25 @@
+import React, { Component } from 'react';
+
+import FoodMenu from './FoodMenu.js';
+
+
+
+class App extends Component {
+
+
+
+  render() {
+
+    return (
+
+      <FoodMenu />
+
+    );
+
+  }
+
+}
+
+
+
+export default App;

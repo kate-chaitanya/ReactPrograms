@@ -1,0 +1,38 @@
+import React, { Component } from 'react'
+
+class Comment extends Component {
+
+    getComments() {
+        const commentsList = this.props.comments.map(
+            (comment, index) =>
+                <li className="list-group-item" key={comment.id}>
+                    <span className="text-primary lead"> {comment.commentedBy} </span>: {comment.txt}
+                    <button className="btn btn-danger" onClick={() => this.del(index)}>delete</button>
+                </li>
+        )
+        return commentsList
+    }
+    del(index) {
+        var list = this.props.comments
+        list.splice(index,1)
+        this.props.deleteComment(list)
+    }
+
+    render() {
+        return (
+            <div>
+                {(this.props.comments.length === 0) ? <p className="alert alert-primary">No Comments</p> : <button className="btn btn-link pl-0" data-toggle="collapse" data-target={"#collapseComments" + this.props.postId} aria-expanded="false" aria-controls={"collapseComments" + this.props.postId}>
+                    view Comments</button>}
+
+
+                <div className="collapse" id={"collapseComments" + this.props.postId}>
+                    <ul className="list-group">
+                        {this.getComments()}
+                    </ul>
+                </div>
+            </div>
+        )
+    }
+}
+
+export default Comment;
