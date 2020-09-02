@@ -1,0 +1,222 @@
+
+import React, { Component } from 'react';
+import TextField from '@material-ui/core/TextField';
+import User from './User';
+
+class App extends Component {
+
+    user
+    mobileRef
+    ageRef
+
+    constructor() {
+        super();
+        this.user = new User()
+        this.state = {
+            user: this.user,
+            nameError: false,
+            passwordError: false,
+            lengthError: false,
+            retypePasswordError: false,
+            matchError: false,
+            ageError: false,
+            agelimitError: false,
+            phoneNumberError: false,
+            mobileError: false,
+            disabledFlag: true,
+            displayflag: false
+        }
+    }
+
+    handleSubmit(event) {
+        alert('Welcome, ' + this.state.user.username)
+        event.preventDefault();
+        this.setState({
+            displayflag: true
+        })
+    }
+
+    handleNameChange(event) {
+
+        this.user.username = event.target.value
+        this.setState({
+            user: this.user,
+            nameError: (this.user.username === "") ? true : false
+        })
+        this.disable()
+    }
+
+    handlePasswordChange(event) {
+        this.user.password = event.target.value
+        this.setState({
+            user: this.user,
+            passwordError: (this.user.password === "") ? true : false,
+            lengthError: (this.user.password.length <= 6) ? true : false
+        })
+        this.disable()
+    }
+
+
+    handleretypePasswordChange(event) {
+        this.user.retypePassword = event.target.value
+        this.setState({
+            user: this.user,
+            retypePasswordError: (this.user.retypePassword === "") ? true : false,
+            matchError: (this.user.retypePassword !== this.user.password) ? true : false
+
+
+        })
+        this.disable()
+    }
+
+
+    handleageChange(event) {
+        this.user.age = event.target.value
+        this.setState({
+            user: this.user,
+            ageError: (this.user.age === "") ? true : false,
+            agelimitError: (this.user.age >= 100) ? true : false
+
+        })
+        this.disable()
+    }
+
+    handlephoneNumberChange(event) {
+        this.user.phoneNumber = event.target.value
+        this.setState({
+            user: this.user,
+            mobileError: (this.user.phoneNumber === "") ? true : false,
+            phoneNumberError: (this.user.phoneNumber.length < 10) ? true : false
+
+        })
+        this.disable()
+    }
+
+    handlegenderChange(event) {
+        this.user.gender = event.target.value
+        this.setState({
+            user: this.user
+        })
+        this.disable()
+    }
+    disable() {
+        this.setState({
+            disabledFlag: (this.state.user.username === "" || this.state.user.password === "" || this.state.user.retypePassword === "" || this.state.user.age === "" || this.state.user.phoneNumber === "" || this.state.user.gender === "") ? true : false
+        })
+    }
+
+    render() {
+        return (
+            <div className="container">
+                <div className="jumbotron py-3 my-4">
+                    <p className="display-4 text-center mb-0">Login Form</p>
+                </div>
+
+                <form onSubmit={(event) => this.handleSubmit(event)}>
+                    <fieldset>
+                        <div className="form-group">
+
+
+                            <TextField id="outlined-basic" label="Enter name" variant="outlined"  style={{ margin: 8 }} value={this.state.user.username} onChange={(event) => this.handleNameChange(event)} />
+                            {
+                                (this.state.nameError) ?
+                                    <div className="alert alert-danger" role="alert">
+                                        Email can't be empty
+                        </div> : null
+                            }
+
+                        </div>
+
+                        <div className="form-group">
+
+                            <TextField id="outlined-basic" label="Enter Password"  type="password" variant="outlined" style={{ margin: 8 }} value={this.state.user.password} onChange={(event) => this.handlePasswordChange(event)} />
+                            {
+                                (this.state.passwordError) ?
+                                    <div className="alert alert-danger" role="alert">
+                                        Password can't be empty
+                        </div> : null
+                            }
+                            {
+                                (this.state.lengthError) ?
+                                    <div className="alert alert-danger" role="alert">
+                                        Password should be minimum 6 characters
+                    </div> : null
+                            }
+
+                        </div>
+
+                        <div className="form-group">
+
+                            <TextField id="outlined-basic" label="Enter confirmPassword"  type="password" variant="outlined" style={{ margin: 8 }} value={this.state.user.retypePassword} onChange={(event) => this.handleretypePasswordChange(event)} />
+                            {
+                                (this.state.retypePasswordError) ?
+                                    <div className="alert alert-danger" role="alert">
+                                        Password can't be empty
+                                    </div> : null
+                            }
+                            {
+                                (this.state.matchError) ?
+                                    <div className="alert alert-danger" role="alert">
+                                        Password not matched
+                                 </div> : null
+                            }
+                        </div>
+                        <div className="form-group">
+
+                            <TextField id="outlined-basic" label="Enter age" variant="outlined" style={{ margin: 8 }} value={this.state.user.age} onChange={(event) => this.handleageChange(event)} />
+
+                            {
+                                (this.state.ageError) ?
+                                    <div className="alert alert-danger" role="alert">
+                                        Age can't be empty
+                        </div> : null
+                            }
+                            {
+                                (this.state.agelimitError) ?
+                                    <div className="alert alert-danger" role="alert">
+                                        Age should be less than 100
+                            </div> : null
+                            }
+                        </div>
+
+                        <div className="form-group">
+
+                            <TextField id="outlined-basic" label="Enter Phone Number" variant="outlined"  style={{ margin: 8 }} value={this.state.user.phoneNumber} onChange={(event) => this.handlephoneNumberChange(event)} />
+                            {
+                                (this.state.mobileError) ?
+                                    <div className="alert alert-danger" role="alert">
+                                        Phone number can't be empty
+                                    </div> :
+
+                                    (this.state.phoneNumberError) ?
+                                        <div className="alert alert-danger" role="alert">
+                                            Maximum 10 digits
+                                    </div> : null
+                            }
+                        </div>
+                        <div className="form-group">
+                            <label>Gender:</label>
+                            <input type="radio" name="gender" value="male" onChange={(event) => this.handlegenderChange(event)} /> Male
+                            <input type="radio" name="gender" value="female" onChange={(event) => this.handlegenderChange(event)} /> Female
+
+                        </div>
+                        <button className="btn btn-primary" type="submit" disabled={this.state.disabledFlag}>Submit</button>
+                    </fieldset>
+                </form>
+
+                {(this.state.displayflag) ?
+                    <div>
+                        <ul className="list-group">
+                            <li className="list-group-item">Name: {this.state.user.username} </li>
+                            <li className="list-group-item">Password: {this.state.user.password}</li>
+                            <li className="list-group-item">Age: {this.state.user.age}</li>
+                            <li className="list-group-item">phoneNumber: {this.state.user.phoneNumber}</li>
+                            <li className="list-group-item">Gender:{this.state.user.gender}</li></ul></div> : null
+                }
+
+            </div>
+        );
+    }
+}
+
+export default App;
